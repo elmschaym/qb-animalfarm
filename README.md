@@ -1,6 +1,10 @@
 # qb-animalfarm
-# Vidoe https://youtu.be/WCwE5VghcQk
 Animal farming
+
+Video https://youtu.be/WCwE5VghcQk
+
+
+
 
 	ADD THESE LINES IN qb-core/shared.lua
 	
