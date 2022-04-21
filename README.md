@@ -1,7 +1,8 @@
 # qb-animalfarm
 Animal farming
-
 Video https://youtu.be/WCwE5VghcQk
+
+
 ADD THESE LINES IN qb-core/shared.lua
 ADD IMAGE IN qb/qb-inventory\html\images
 cowpelt.png and meat.png
