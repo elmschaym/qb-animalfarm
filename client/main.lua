@@ -33,6 +33,10 @@ function drawTxt(text)
     DrawText(0.5, 0.93)
 end
 
+function getAnimalMatch(hash)
+    for _, v in pairs(Config.Animals) do if (v.hash == hash) then return v end end
+end
+
 function ShowHelpMsg(msg)   
     BeginTextCommandDisplayHelp('STRING')
     AddTextComponentSubstringPlayerName(msg)
@@ -58,51 +62,55 @@ Citizen.CreateThread(function()
                     while DoesEntityExist(ent) do
                             local pos = GetEntityCoords(ped)
                             local rpos = GetEntityCoords(ent)
-                            if (GetDistanceBetweenCoords(pos, rpos.x, rpos.y, rpos.z, true) < 25) then
-                                if (DoesEntityExist(ent)) then
-                                    if (tonumber(GetEntityHealth(ent)) < 1) then 
+                            local model = GetEntityModel(ent)
+                            local animal = getAnimalMatch(model)
+                            if (model and animal) then
+                                if (GetDistanceBetweenCoords(pos, rpos.x, rpos.y, rpos.z, true) < 25) then
+                                    if (DoesEntityExist(ent)) then
+                                        if (tonumber(GetEntityHealth(ent)) < 1) then 
 
-                                        DrawMarker(20, rpos.x, rpos.y, rpos.z + 0.8, 0, 0, 0,0, 0, 0, 0.5, 0.5, -0.25, 255, 60, 60, 150, 1, 1, 2, 0, 0, 0, 0)
+                                            DrawMarker(20, rpos.x, rpos.y, rpos.z + 0.8, 0, 0, 0,0, 0, 0, 0.5, 0.5, -0.25, 255, 60, 60, 150, 1, 1, 2, 0, 0, 0, 0)
 
-                                        if (GetDistanceBetweenCoords(pos, rpos.x, rpos.y,rpos.z, true )< 1.1 ) then  
-                                                          
-                                            ShowHelpMsg('Press ~INPUT_PICKUP~ to Harvest Animal.')
-                                            if IsControlJustPressed(0, 38) and not isPressed then
-                                                        loadAnimDict('amb@medic@standing@kneel@base')
-                                                        loadAnimDict('anim@gangops@facility@servers@bodysearch@')
-                                                        TaskPlayAnim(GetPlayerPed(-1),"amb@medic@standing@kneel@base","base", 8.0, -8.0, -1, 1, 0,false, false, false)
-                                                        TaskPlayAnim(GetPlayerPed(-1),"anim@gangops@facility@servers@bodysearch@","player_search", 8.0, -8.0, -1,48, 0, false, false, false)                                                
-                                                        isPressed = true
-                                                        QBCore.Functions.Progressbar("harv_anim", "Harvesting Animal", 5000, false, false, {
-                                                            disableMovement = true,
-                                                            disableCarMovement = false,
-                                                            disableMouse = false,
-                                                            disableCombat = true,
-                                                        }, {}, {}, {}, function() 
-                                                            ClearPedTasks(GetPlayerPed(-1))                                                                                                
-                                                           -- TriggerServerEvent('cad-hunting:server:AddItem',ent.id, 1)   
-                                                            DeleteEntity(ent)
-                                                            TriggerServerEvent('QBCore:Server:AddItem', "meat", math.random(1, 3))
-                                                            TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items['meat'], "add")
-                                                            TriggerServerEvent('QBCore:Server:AddItem', "cowpelt", math.random(1, 3))
-                                                            TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items['cowpelt'], "add")
-                                                            
-                                                          --  Citizen.Wait(100)   
-                                                           isPressed = false                                                                          
-                                                        end, function() -- Cancel
-                                                            ClearPedTasks(GetPlayerPed(-1))     
-                                                            QBCore.Functions.Notify("Canceled..", "error")                                                 
-                                                           
-                                                        end)                
+                                            if (GetDistanceBetweenCoords(pos, rpos.x, rpos.y,rpos.z, true )< 1.1 ) then  
+                                                              
+                                                ShowHelpMsg('Press ~INPUT_PICKUP~ to Harvest Animal.')
+                                                if IsControlJustPressed(0, 38) and not isPressed then
+                                                            loadAnimDict('amb@medic@standing@kneel@base')
+                                                            loadAnimDict('anim@gangops@facility@servers@bodysearch@')
+                                                            TaskPlayAnim(GetPlayerPed(-1),"amb@medic@standing@kneel@base","base", 8.0, -8.0, -1, 1, 0,false, false, false)
+                                                            TaskPlayAnim(GetPlayerPed(-1),"anim@gangops@facility@servers@bodysearch@","player_search", 8.0, -8.0, -1,48, 0, false, false, false)                                                
+                                                            isPressed = true
+                                                            QBCore.Functions.Progressbar("harv_anim", "Harvesting Animal", 5000, false, false, {
+                                                                disableMovement = true,
+                                                                disableCarMovement = false,
+                                                                disableMouse = false,
+                                                                disableCombat = true,
+                                                            }, {}, {}, {}, function() 
+                                                                ClearPedTasks(GetPlayerPed(-1))                                                                                                
+                                                               -- TriggerServerEvent('cad-hunting:server:AddItem',ent.id, 1)   
+                                                                DeleteEntity(ent)
+                                                                TriggerServerEvent('QBCore:Server:AddItem', "meat", math.random(1, 3))
+                                                                TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items['meat'], "add")
+                                                                TriggerServerEvent('QBCore:Server:AddItem', "cowpelt", math.random(1, 3))
+                                                                TriggerEvent("inventory:client:ItemBox", QBCore.Shared.Items['cowpelt'], "add")
+                                                                
+                                                              --  Citizen.Wait(100)   
+                                                               isPressed = false                                                                          
+                                                            end, function() -- Cancel
+                                                                ClearPedTasks(GetPlayerPed(-1))     
+                                                                QBCore.Functions.Notify("Canceled..", "error")                                                 
+                                                               
+                                                            end)                
+                                                end
                                             end
                                         end
+                                    else                        
+                                        DeleteEntity(ent)
                                     end
-                                else                        
+                                else
                                     DeleteEntity(ent)
+                                    QBCore.Functions.Notify("Bobo!! Baka mo kinain na nang uod.",'error', 15000)
                                 end
-                            else
-                                DeleteEntity(ent)
-                                QBCore.Functions.Notify("Bobo!! Baka mo kinain na nang uod.",'error', 15000)
                             end
                         Citizen.Wait(4)
                     end
