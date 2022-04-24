@@ -1,18 +1,18 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 
-RegisterServerEvent("cad-hunting:server:spawnanimals")
-AddEventHandler("cad-hunting:server:spawnanimals", function()
+RegisterServerEvent("qb-animafarm:server:spawnanimals")
+AddEventHandler("qb-animafarm:server:spawnanimals", function()
     local _source = source    
-    TriggerClientEvent("cad-hunting:client:spawnanimals", -1)
+    TriggerClientEvent("qb-animafarm:client:spawnanimals", -1)
 end)
 
 QBCore.Commands.Add("spawnanimal", "Spawn Animals", {{"model", "Animal Model"}}, false, function(source, args)
-    TriggerClientEvent('cad-hunting:client:spawnanim', source, args[1])
+    TriggerClientEvent('qb-animafarm:client:spawnanim', source, args[1])
 end, 'god')
 
 
-RegisterServerEvent('hunting:server:sellmeat')
-AddEventHandler('hunting:server:sellmeat', function()
+RegisterServerEvent('qb-animafarm:server:sellmeat')
+AddEventHandler('qb-animafarm:server:sellmeat', function()
     local src = source        
     local Player = QBCore.Functions.GetPlayer(src)    
     local price = 0
